@@ -1,131 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Indian Labour Codes – Complete HR Compliance Guide</title>
+
+<title>HR Labour Compliance Dashboard</title>
 
 <style>
 
 /* GLOBAL */
 
-body{
-font-family: 'Segoe UI', Arial;
-margin:0;
-background:#f4f6f9;
+*{
+box-sizing:border-box;
 }
 
-h1{
-text-align:center;
-padding:20px;
-background:#1e3c72;
-color:white;
+body{
+
+font-family:Segoe UI,Arial;
 margin:0;
+background:#f4f6f8;
+color:#333;
+
+}
+
+/* HEADER */
+
+header{
+
+background:white;
+border-bottom:1px solid #e0e0e0;
+padding:20px;
+text-align:center;
+font-size:24px;
+font-weight:600;
+
+}
+
+/* TOOLBAR */
+
+.toolbar{
+
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+padding:15px;
+background:#fafafa;
+border-bottom:1px solid #e5e5e5;
+
+}
+
+.toolbar input{
+
+padding:10px;
+border:1px solid #d0d0d0;
+border-radius:4px;
+width:250px;
+
+}
+
+.toolbar button{
+
+padding:10px 16px;
+border:none;
+background:#4a4a4a;
+color:white;
+border-radius:4px;
+cursor:pointer;
+
+}
+
+.toolbar button:hover{
+
+background:#333;
+
 }
 
 /* TABLE */
 
+.table-container{
+
+padding:20px;
+overflow-x:auto;
+
+}
+
 table{
+
 width:100%;
 border-collapse:collapse;
 background:white;
+box-shadow:0 3px 10px rgba(0,0,0,0.05);
+
 }
 
 th{
-background:#0d6efd;
-color:white;
-padding:12px;
-font-size:15px;
-position:sticky;
-top:0;
-z-index:10;
+
+background:#e9ecef;
+padding:14px;
+text-align:left;
+font-weight:600;
+border-bottom:2px solid #d6d6d6;
+
 }
 
 td{
-padding:12px;
-border-bottom:1px solid #ddd;
+
+padding:14px;
+border-bottom:1px solid #eee;
 vertical-align:top;
-font-size:14px;
+
 }
 
-/* ACT SUB TABLE */
+/* SUBTABLE */
 
-.actTable{
+.subtable{
+
 width:100%;
 border-collapse:collapse;
-margin-top:10px;
+margin-top:8px;
+
 }
 
-.actTable th{
-background:#6c757d;
+.subtable td{
+
+padding:6px;
 font-size:13px;
+border-bottom:1px solid #eee;
+
 }
 
-.actTable td{
-font-size:13px;
-}
+/* STATUS */
 
-/* CODE COLORS */
+.status{
 
-.wage{border-left:6px solid #28a745;}
-.ir{border-left:6px solid #dc3545;}
-.ss{border-left:6px solid #ffc107;}
-.osh{border-left:6px solid #17a2b8;}
-
-/* EXPAND BUTTON */
-
-button{
-background:#0d6efd;
-color:white;
-border:none;
-padding:6px 10px;
+padding:5px 10px;
+font-size:12px;
 border-radius:4px;
+border:none;
 cursor:pointer;
-font-size:13px;
+
 }
 
-button:hover{
-background:#0b5ed7;
+.pending{
+
+background:#f0f0f0;
+
 }
 
-/* MOBILE CSS */
+.done{
 
-@media screen and (max-width:768px){
+background:#d4edda;
 
-table, thead, tbody, th, td, tr{
+}
+
+/* MOBILE VIEW */
+
+@media(max-width:768px){
+
+table,thead,tbody,tr,td,th{
+
 display:block;
+
 }
 
 thead{
+
 display:none;
+
 }
 
 tr{
-margin-bottom:15px;
-border:1px solid #ddd;
-border-radius:8px;
+
 background:white;
+margin-bottom:18px;
+padding:15px;
+border-radius:8px;
+box-shadow:0 4px 15px rgba(0,0,0,0.08);
+
 }
 
 td{
+
 border:none;
-padding:10px;
-}
+padding:8px 0;
 
 }
 
-/* DESKTOP LARGE SCREEN */
+td::before{
 
-@media screen and (min-width:1200px){
+content:attr(data-label);
+font-weight:600;
+display:block;
+color:#666;
+margin-bottom:3px;
 
-body{
-max-width:1600px;
-margin:auto;
-}
-
-td{
-font-size:15px;
-line-height:1.6;
 }
 
 }
@@ -134,15 +204,49 @@ line-height:1.6;
 
 <script>
 
-function toggleActs(id){
+/* SEARCH */
 
-var x=document.getElementById(id);
+function searchTable(){
 
-if(x.style.display==="none"){
-x.style.display="block";
-}else{
-x.style.display="none";
+let input=document.getElementById("searchInput").value.toLowerCase()
+
+let rows=document.querySelectorAll("tbody tr")
+
+rows.forEach(row=>{
+
+let text=row.innerText.toLowerCase()
+
+row.style.display=text.includes(input)?"":"none"
+
+})
+
 }
+
+/* STATUS TOGGLE */
+
+function toggleStatus(btn){
+
+if(btn.innerText==="Pending"){
+
+btn.innerText="Done"
+btn.classList.remove("pending")
+btn.classList.add("done")
+
+}else{
+
+btn.innerText="Pending"
+btn.classList.remove("done")
+btn.classList.add("pending")
+
+}
+
+}
+
+/* PRINT */
+
+function downloadPDF(){
+
+window.print()
 
 }
 
@@ -152,411 +256,227 @@ x.style.display="none";
 
 <body>
 
-<h1>India Labour Codes – Complete HR Compliance Dashboard</h1>
+<header>
+
+India Labour Codes HR Compliance Dashboard
+
+</header>
+
+<div class="toolbar">
+
+<input id="searchInput" onkeyup="searchTable()" placeholder="Search labour act or code">
+
+<button onclick="downloadPDF()">Export PDF</button>
+
+</div>
+
+<div class="table-container">
 
 <table>
+
+<thead>
 
 <tr>
 
 <th>Labour Code</th>
-<th>Applicability & Eligibility</th>
-<th>Existing Compliance</th>
-<th>New Compliance Under Code</th>
-<th>Existing Penalties</th>
-<th>New Penalties</th>
+<th>Applicability</th>
+<th>New Compliance</th>
 <th>Acts Covered</th>
 <th>Key Highlights</th>
+<th>Status</th>
 
 </tr>
 
-<!-- CODE ON WAGES -->
+</thead>
 
-<tr class="wage">
+<tbody>
 
-<td><b>Code on Wages 2019</b></td>
+<tr>
 
-<td>
+<td data-label="Labour Code"><b>Code on Wages 2019</b></td>
 
-Applies to **all employees across organised and unorganised sectors**.
+<td data-label="Applicability">
 
-Minimum wage applicable to all industries.
-
-Gender neutral wage protection.
+Applicable to all employees across organised and unorganised sectors
 
 </td>
 
-<td>
+<td data-label="New Compliance">
 
-Minimum Wages Act 1948  
-Payment of Wages Act 1936  
-Payment of Bonus Act 1965  
-Equal Remuneration Act 1976
-
-</td>
-
-<td>
-
-Uniform wage definition
-
-Basic + DA ≥ **50% of total salary**
-
-Digitised wage payments
-
-National Floor Wage
+• Basic wage must be ≥ 50% of CTC  
+• National floor wage introduced  
+• Digital payment of wages encouraged  
 
 </td>
 
-<td>
+<td data-label="Acts Covered">
 
-₹500 – ₹20,000 depending on violation
+<table class="subtable">
+
+<tr><td>Minimum Wages Act 1948</td></tr>
+<tr><td>Payment of Wages Act 1936</td></tr>
+<tr><td>Payment of Bonus Act 1965</td></tr>
+<tr><td>Equal Remuneration Act 1976</td></tr>
+
+</table>
 
 </td>
 
-<td>
+<td data-label="Key Highlights">
 
-Up to **₹1,00,000 fine**  
-Repeat offence → **3 months imprisonment**
+Salary payment before 7th of month  
+Final settlement within 48 hours
 
 </td>
 
-<td>
+<td data-label="Status">
 
-<button onclick="toggleActs('wageActs')">View Acts</button>
+<button class="status pending" onclick="toggleStatus(this)">Pending</button>
 
-<div id="wageActs" style="display:none">
+</td>
 
-<table class="actTable">
-
-<tr>
-<th>Act</th>
-<th>Purpose</th>
 </tr>
 
 <tr>
-<td>Minimum Wages Act 1948</td>
-<td>Ensure minimum wage for workers</td>
+
+<td data-label="Labour Code"><b>Industrial Relations Code 2020</b></td>
+
+<td data-label="Applicability">
+
+Industrial establishments employing workers
+
+</td>
+
+<td data-label="New Compliance">
+
+• Strike notice mandatory  
+• Reskilling fund for retrenched workers  
+
+</td>
+
+<td data-label="Acts Covered">
+
+<table class="subtable">
+
+<tr><td>Industrial Disputes Act 1947</td></tr>
+<tr><td>Trade Unions Act 1926</td></tr>
+<tr><td>Industrial Employment Standing Orders Act</td></tr>
+
+</table>
+
+</td>
+
+<td data-label="Key Highlights">
+
+Layoff approval required if workers exceed 300
+
+</td>
+
+<td data-label="Status">
+
+<button class="status pending" onclick="toggleStatus(this)">Pending</button>
+
+</td>
+
 </tr>
 
 <tr>
-<td>Payment of Wages Act 1936</td>
-<td>Timely wage payment</td>
+
+<td data-label="Labour Code"><b>Social Security Code 2020</b></td>
+
+<td data-label="Applicability">
+
+EPF for establishments ≥10 employees
+
+</td>
+
+<td data-label="New Compliance">
+
+• Social security extended to gig workers  
+• Aggregator contribution introduced  
+
+</td>
+
+<td data-label="Acts Covered">
+
+<table class="subtable">
+
+<tr><td>EPF Act 1952</td></tr>
+<tr><td>ESI Act 1948</td></tr>
+<tr><td>Gratuity Act 1972</td></tr>
+<tr><td>Maternity Benefit Act 1961</td></tr>
+<tr><td>Employees Compensation Act 1923</td></tr>
+
+</table>
+
+</td>
+
+<td data-label="Key Highlights">
+
+Gratuity applicable to fixed-term employees
+
+</td>
+
+<td data-label="Status">
+
+<button class="status pending" onclick="toggleStatus(this)">Pending</button>
+
+</td>
+
 </tr>
 
 <tr>
-<td>Payment of Bonus Act 1965</td>
-<td>Statutory bonus to employees</td>
+
+<td data-label="Labour Code"><b>OSH & Working Conditions Code 2020</b></td>
+
+<td data-label="Applicability">
+
+Factories ≥20 workers  
+Establishments ≥10 workers
+
+</td>
+
+<td data-label="New Compliance">
+
+• Single labour licence  
+• Free annual health checkups  
+
+</td>
+
+<td data-label="Acts Covered">
+
+<table class="subtable">
+
+<tr><td>Factories Act 1948</td></tr>
+<tr><td>BOCW Act 1996</td></tr>
+<tr><td>Contract Labour Act 1970</td></tr>
+<tr><td>Interstate Migrant Workers Act</td></tr>
+<tr><td>Plantation Labour Act</td></tr>
+
+</table>
+
+</td>
+
+<td data-label="Key Highlights">
+
+Single registration for establishments
+
+</td>
+
+<td data-label="Status">
+
+<button class="status pending" onclick="toggleStatus(this)">Pending</button>
+
+</td>
+
 </tr>
 
-<tr>
-<td>Equal Remuneration Act 1976</td>
-<td>Equal pay for equal work</td>
-</tr>
+</tbody>
 
 </table>
 
 </div>
-
-</td>
-
-<td>
-
-• Salary payment before **7th of month**
-
-• **48 hr final settlement**
-
-• Bonus coverage expanded
-
-• Gender neutral wage rights
-
-• Floor wage concept
-
-</td>
-
-</tr>
-
-<!-- INDUSTRIAL RELATIONS -->
-
-<tr class="ir">
-
-<td><b>Industrial Relations Code 2020</b></td>
-
-<td>
-
-Applies to establishments with employees.
-
-Standing orders mandatory for **300+ employees**.
-
-</td>
-
-<td>
-
-Trade Union Act  
-Industrial Disputes Act  
-Industrial Employment Standing Orders Act
-
-</td>
-
-<td>
-
-Reskilling fund for retrenched workers
-
-Faster dispute resolution
-
-</td>
-
-<td>
-
-₹1 lakh penalties for illegal strikes
-
-</td>
-
-<td>
-
-₹5 lakh fine  
-1 year imprisonment
-
-</td>
-
-<td>
-
-<button onclick="toggleActs('irActs')">View Acts</button>
-
-<div id="irActs" style="display:none">
-
-<table class="actTable">
-
-<tr>
-<th>Act</th>
-<th>Purpose</th>
-</tr>
-
-<tr>
-<td>Industrial Disputes Act 1947</td>
-<td>Dispute settlement mechanism</td>
-</tr>
-
-<tr>
-<td>Trade Unions Act 1926</td>
-<td>Union formation regulation</td>
-</tr>
-
-<tr>
-<td>Standing Orders Act 1946</td>
-<td>Define employment conditions</td>
-</tr>
-
-</table>
-
-</div>
-
-</td>
-
-<td>
-
-• Strike notice mandatory
-
-• Layoff approval threshold **300 employees**
-
-• Reskilling fund created
-
-</td>
-
-</tr>
-
-<!-- SOCIAL SECURITY -->
-
-<tr class="ss">
-
-<td><b>Social Security Code 2020</b></td>
-
-<td>
-
-Applicable to establishments with **10+ employees** for EPF.
-
-Gig workers and platform workers included.
-
-</td>
-
-<td>
-
-EPF Act  
-ESI Act  
-Gratuity Act  
-Maternity Benefit Act  
-Unorganised Workers Act
-
-</td>
-
-<td>
-
-Gig worker benefits
-
-Universal Social Security Number
-
-Online registrations
-
-</td>
-
-<td>
-
-₹5,000 – ₹50,000
-
-</td>
-
-<td>
-
-₹3 lakh fine  
-3 years imprisonment
-
-</td>
-
-<td>
-
-<button onclick="toggleActs('ssActs')">View Acts</button>
-
-<div id="ssActs" style="display:none">
-
-<table class="actTable">
-
-<tr>
-<th>Act</th>
-<th>Purpose</th>
-</tr>
-
-<tr>
-<td>EPF Act 1952</td>
-<td>Retirement savings</td>
-</tr>
-
-<tr>
-<td>ESI Act 1948</td>
-<td>Health insurance</td>
-</tr>
-
-<tr>
-<td>Payment of Gratuity Act 1972</td>
-<td>Terminal benefits</td>
-</tr>
-
-<tr>
-<td>Maternity Benefit Act</td>
-<td>Women maternity protection</td>
-</tr>
-
-</table>
-
-</div>
-
-</td>
-
-<td>
-
-• **Gratuity for fixed term employees**
-
-• Gig worker social security
-
-• Aggregator contribution
-
-</td>
-
-</tr>
-
-<!-- OSH CODE -->
-
-<tr class="osh">
-
-<td><b>OSH Code 2020</b></td>
-
-<td>
-
-Applies to establishments with **10+ workers** and factories with **20+ workers**
-
-</td>
-
-<td>
-
-Factories Act  
-BOCW Act  
-Contract Labour Act  
-Interstate Migrant Workers Act
-
-</td>
-
-<td>
-
-Single labour license
-
-Digitised compliance
-
-Health standards
-
-</td>
-
-<td>
-
-₹50,000 penalties
-
-</td>
-
-<td>
-
-₹2 lakh fine  
-2 years imprisonment
-
-</td>
-
-<td>
-
-<button onclick="toggleActs('oshActs')">View Acts</button>
-
-<div id="oshActs" style="display:none">
-
-<table class="actTable">
-
-<tr>
-<th>Act</th>
-<th>Purpose</th>
-</tr>
-
-<tr>
-<td>Factories Act 1948</td>
-<td>Workplace safety</td>
-</tr>
-
-<tr>
-<td>BOCW Act 1996</td>
-<td>Construction worker welfare</td>
-</tr>
-
-<tr>
-<td>Contract Labour Act</td>
-<td>Regulate contract workers</td>
-</tr>
-
-<tr>
-<td>Interstate Migrant Workmen Act</td>
-<td>Protection for migrant workers</td>
-</tr>
-
-</table>
-
-</div>
-
-</td>
-
-<td>
-
-• **Single license for contractors**
-
-• Free annual health checkups
-
-• Safety committees mandatory
-
-</td>
-
-</tr>
-
-</table>
 
 </body>
+
 </html>
