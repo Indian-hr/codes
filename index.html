@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,142 +18,127 @@ box-sizing:border-box;
 }
 
 body{
-
 font-family:Segoe UI,Arial;
 margin:0;
 background:#f4f6f8;
 color:#333;
-
 }
 
 /* HEADER */
 
 header{
-
 background:white;
 border-bottom:1px solid #e0e0e0;
 padding:20px;
 text-align:center;
 font-size:24px;
 font-weight:600;
+}
 
+/* PROGRESS BAR */
+
+#progressBar{
+padding:12px 20px;
+background:#fff;
+border-bottom:1px solid #eee;
+font-size:14px;
 }
 
 /* TOOLBAR */
 
 .toolbar{
-
 display:flex;
 gap:10px;
 flex-wrap:wrap;
 padding:15px;
 background:#fafafa;
 border-bottom:1px solid #e5e5e5;
-
 }
 
 .toolbar input{
-
 padding:10px;
 border:1px solid #d0d0d0;
 border-radius:4px;
 width:250px;
-
 }
 
 .toolbar button{
-
 padding:10px 16px;
 border:none;
 background:#4a4a4a;
 color:white;
 border-radius:4px;
 cursor:pointer;
-
 }
 
 .toolbar button:hover{
-
 background:#333;
-
 }
 
 /* TABLE */
 
 .table-container{
-
 padding:20px;
 overflow-x:auto;
-
 }
 
 table{
-
 width:100%;
 border-collapse:collapse;
 background:white;
 box-shadow:0 3px 10px rgba(0,0,0,0.05);
+}
 
+thead th{
+position:sticky;
+top:0;
+z-index:10;
+background:#e9ecef;
 }
 
 th{
-
-background:#e9ecef;
 padding:14px;
 text-align:left;
 font-weight:600;
 border-bottom:2px solid #d6d6d6;
-
 }
 
 td{
-
 padding:14px;
 border-bottom:1px solid #eee;
 vertical-align:top;
-
 }
 
 /* SUBTABLE */
 
 .subtable{
-
 width:100%;
 border-collapse:collapse;
 margin-top:8px;
-
 }
 
 .subtable td{
-
 padding:6px;
 font-size:13px;
 border-bottom:1px solid #eee;
-
 }
 
 /* STATUS */
 
 .status{
-
 padding:5px 10px;
 font-size:12px;
 border-radius:4px;
 border:none;
 cursor:pointer;
-
 }
 
 .pending{
-
 background:#f0f0f0;
-
 }
 
 .done{
-
 background:#d4edda;
-
 }
 
 /* MOBILE VIEW */
@@ -160,42 +146,32 @@ background:#d4edda;
 @media(max-width:768px){
 
 table,thead,tbody,tr,td,th{
-
 display:block;
-
 }
 
 thead{
-
 display:none;
-
 }
 
 tr{
-
 background:white;
 margin-bottom:18px;
 padding:15px;
 border-radius:8px;
 box-shadow:0 4px 15px rgba(0,0,0,0.08);
-
 }
 
 td{
-
 border:none;
 padding:8px 0;
-
 }
 
 td::before{
-
 content:attr(data-label);
 font-weight:600;
 display:block;
 color:#666;
 margin-bottom:3px;
-
 }
 
 }
@@ -204,19 +180,23 @@ margin-bottom:3px;
 
 <script>
 
-/* SEARCH */
+/* SEARCH + HIGHLIGHT */
 
 function searchTable(){
 
 let input=document.getElementById("searchInput").value.toLowerCase()
-
 let rows=document.querySelectorAll("tbody tr")
 
 rows.forEach(row=>{
 
 let text=row.innerText.toLowerCase()
 
-row.style.display=text.includes(input)?"":"none"
+if(text.includes(input)){
+row.style.display=""
+row.style.background="#fff9d7"
+}else{
+row.style.display="none"
+}
 
 })
 
@@ -227,28 +207,60 @@ row.style.display=text.includes(input)?"":"none"
 function toggleStatus(btn){
 
 if(btn.innerText==="Pending"){
-
 btn.innerText="Done"
 btn.classList.remove("pending")
 btn.classList.add("done")
-
 }else{
-
 btn.innerText="Pending"
 btn.classList.remove("done")
 btn.classList.add("pending")
+}
+
+updateProgress()
 
 }
 
+/* PROGRESS COUNTER */
+
+function updateProgress(){
+
+let buttons=document.querySelectorAll(".status")
+
+let done=0
+
+buttons.forEach(btn=>{
+if(btn.innerText==="Done"){done++}
+})
+
+document.getElementById("doneCount").innerText=done
+document.getElementById("totalCount").innerText=buttons.length
+
 }
 
-/* PRINT */
+/* EXPORT PDF */
 
 function downloadPDF(){
-
 window.print()
+}
+
+/* EXPORT EXCEL */
+
+function exportTable(){
+
+let table=document.querySelector("table").outerHTML
+
+let data='data:application/vnd.ms-excel,'+encodeURIComponent(table)
+
+let link=document.createElement("a")
+
+link.href=data
+link.download="Labour_Compliance_Dashboard.xls"
+
+link.click()
 
 }
+
+document.addEventListener("DOMContentLoaded",updateProgress)
 
 </script>
 
@@ -257,16 +269,19 @@ window.print()
 <body>
 
 <header>
-
 India Labour Codes HR Compliance Dashboard
-
 </header>
+
+<div id="progressBar">
+Compliance Progress: <b><span id="doneCount">0</span> / <span id="totalCount">0</span></b> Completed
+</div>
 
 <div class="toolbar">
 
 <input id="searchInput" onkeyup="searchTable()" placeholder="Search labour act or code">
 
 <button onclick="downloadPDF()">Export PDF</button>
+<button onclick="exportTable()">Export Excel</button>
 
 </div>
 
@@ -275,198 +290,174 @@ India Labour Codes HR Compliance Dashboard
 <table>
 
 <thead>
-
 <tr>
-
 <th>Labour Code</th>
 <th>Applicability</th>
 <th>New Compliance</th>
 <th>Acts Covered</th>
 <th>Key Highlights</th>
 <th>Status</th>
-
 </tr>
-
 </thead>
 
 <tbody>
+
+<!-- CODE ON WAGES -->
 
 <tr>
 
 <td data-label="Labour Code"><b>Code on Wages 2019</b></td>
 
 <td data-label="Applicability">
-
 Applicable to all employees across organised and unorganised sectors
-
 </td>
 
 <td data-label="New Compliance">
-
 • Basic wage must be ≥ 50% of CTC  
 • National floor wage introduced  
-• Digital payment of wages encouraged  
-
+• Digital payment of wages encouraged
 </td>
 
 <td data-label="Acts Covered">
 
 <table class="subtable">
-
 <tr><td>Minimum Wages Act 1948</td></tr>
 <tr><td>Payment of Wages Act 1936</td></tr>
 <tr><td>Payment of Bonus Act 1965</td></tr>
 <tr><td>Equal Remuneration Act 1976</td></tr>
-
 </table>
 
 </td>
 
 <td data-label="Key Highlights">
-
 Salary payment before 7th of month  
 Final settlement within 48 hours
-
 </td>
 
 <td data-label="Status">
-
 <button class="status pending" onclick="toggleStatus(this)">Pending</button>
-
 </td>
 
 </tr>
+
+<!-- INDUSTRIAL RELATIONS -->
 
 <tr>
 
 <td data-label="Labour Code"><b>Industrial Relations Code 2020</b></td>
 
 <td data-label="Applicability">
-
 Industrial establishments employing workers
-
 </td>
 
 <td data-label="New Compliance">
-
 • Strike notice mandatory  
-• Reskilling fund for retrenched workers  
-
+• Reskilling fund for retrenched workers
 </td>
 
 <td data-label="Acts Covered">
 
 <table class="subtable">
-
 <tr><td>Industrial Disputes Act 1947</td></tr>
 <tr><td>Trade Unions Act 1926</td></tr>
-<tr><td>Industrial Employment Standing Orders Act</td></tr>
-
+<tr><td>Industrial Employment (Standing Orders) Act 1946</td></tr>
 </table>
 
 </td>
 
 <td data-label="Key Highlights">
-
 Layoff approval required if workers exceed 300
-
 </td>
 
 <td data-label="Status">
-
 <button class="status pending" onclick="toggleStatus(this)">Pending</button>
-
 </td>
 
 </tr>
+
+<!-- SOCIAL SECURITY -->
 
 <tr>
 
 <td data-label="Labour Code"><b>Social Security Code 2020</b></td>
 
 <td data-label="Applicability">
-
 EPF for establishments ≥10 employees
-
 </td>
 
 <td data-label="New Compliance">
-
 • Social security extended to gig workers  
-• Aggregator contribution introduced  
-
+• Aggregator contribution introduced
 </td>
 
 <td data-label="Acts Covered">
 
 <table class="subtable">
-
-<tr><td>EPF Act 1952</td></tr>
-<tr><td>ESI Act 1948</td></tr>
-<tr><td>Gratuity Act 1972</td></tr>
-<tr><td>Maternity Benefit Act 1961</td></tr>
 <tr><td>Employees Compensation Act 1923</td></tr>
-
+<tr><td>Employees State Insurance Act 1948</td></tr>
+<tr><td>Employees Provident Fund Act 1952</td></tr>
+<tr><td>Employment Exchanges Act 1959</td></tr>
+<tr><td>Maternity Benefit Act 1961</td></tr>
+<tr><td>Payment of Gratuity Act 1972</td></tr>
+<tr><td>Cine Workers Welfare Fund Act 1981</td></tr>
+<tr><td>BOCW Welfare Cess Act 1996</td></tr>
+<tr><td>Unorganised Workers Social Security Act 2008</td></tr>
 </table>
 
 </td>
 
 <td data-label="Key Highlights">
-
 Gratuity applicable to fixed-term employees
-
 </td>
 
 <td data-label="Status">
-
 <button class="status pending" onclick="toggleStatus(this)">Pending</button>
-
 </td>
 
 </tr>
+
+<!-- OSH CODE -->
 
 <tr>
 
 <td data-label="Labour Code"><b>OSH & Working Conditions Code 2020</b></td>
 
 <td data-label="Applicability">
-
 Factories ≥20 workers  
 Establishments ≥10 workers
-
 </td>
 
 <td data-label="New Compliance">
-
 • Single labour licence  
-• Free annual health checkups  
-
+• Free annual health checkups
 </td>
 
 <td data-label="Acts Covered">
 
 <table class="subtable">
-
 <tr><td>Factories Act 1948</td></tr>
-<tr><td>BOCW Act 1996</td></tr>
+<tr><td>Plantation Labour Act 1951</td></tr>
+<tr><td>Mines Act 1952</td></tr>
+<tr><td>Working Journalists Act 1955</td></tr>
+<tr><td>Motor Transport Workers Act 1961</td></tr>
+<tr><td>Beedi & Cigar Workers Act 1966</td></tr>
 <tr><td>Contract Labour Act 1970</td></tr>
-<tr><td>Interstate Migrant Workers Act</td></tr>
-<tr><td>Plantation Labour Act</td></tr>
-
+<tr><td>Sales Promotion Employees Act 1976</td></tr>
+<tr><td>Inter-State Migrant Workmen Act 1979</td></tr>
+<tr><td>Dock Workers Safety Act 1986</td></tr>
+<tr><td>Building & Other Construction Workers Act 1996</td></tr>
+<tr><td>Cine Workers & Cinema Theatre Workers Act</td></tr>
+<tr><td>Working Journalists Wage Act</td></tr>
 </table>
 
 </td>
 
 <td data-label="Key Highlights">
-
 Single registration for establishments
-
 </td>
 
 <td data-label="Status">
-
 <button class="status pending" onclick="toggleStatus(this)">Pending</button>
-
 </td>
 
 </tr>
@@ -478,5 +469,5 @@ Single registration for establishments
 </div>
 
 </body>
-
 </html>
+```
