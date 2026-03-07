@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>India Labour Codes HR Compliance Dashboard</title>
+
+<style>
+
+/* GLOBAL */
+
+*{box-sizing:border-box;}
+
+body{
+font-family:Segoe UI,Arial;
+margin:0;
+background:#f2f2f2;
+color:#333;
+}
+
+/* HEADER */
+
+header{
+background:#ffffff;
+border-bottom:1px solid #dcdcdc;
+padding:20px;
+text-align:center;
+font-size:24px;
+font-weight:600;
+}
+
+/* PROGRESS BAR */
+
+#progressBar{
+padding:12px 20px;
+background:#ffffff;
+border-bottom:1px solid #ddd;
+font-size:14px;
+}
+
+/* TOOLBAR */
+
+.toolbar{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+padding:15px;
+background:#f7f7f7;
+border-bottom:1px solid #ddd;
+}
+
+.toolbar input{
+padding:10px;
+border:1px solid #ccc;
+border-radius:4px;
+width:250px;
+}
+
+.toolbar button{
+padding:10px 16px;
+border:none;
+background:#555;
+color:white;
+border-radius:4px;
+cursor:pointer;
+}
+
+.toolbar button:hover{
+background:#333;
+}
+
+/* TABLE */
+
+.table-container{
+padding:20px;
+overflow-x:auto;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+box-shadow:0 2px 8px rgba(0,0,0,0.05);
+}
+
+thead th{
+position:sticky;
+top:0;
+background:#e8e8e8;
+z-index:10;
+}
+
+th{
+padding:12px;
+text-align:left;
+font-weight:600;
+border-bottom:2px solid #ccc;
+}
+
+td{
+padding:12px;
+border-bottom:1px solid #eee;
+vertical-align:top;
+}
+
+/* STATUS */
+
+.status{
+padding:5px 10px;
+font-size:12px;
+border-radius:4px;
+border:none;
+cursor:pointer;
+}
+
+.pending{background:#e6e6e6;}
+.done{background:#d4edda;}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+table,thead,tbody,tr,td,th{display:block;}
+
+thead{display:none;}
+
+tr{
+background:white;
+margin-bottom:18px;
+padding:15px;
+border-radius:8px;
+box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+
+td{
+border:none;
+padding:8px 0;
+}
+
+td::before{
+content:attr(data-label);
+font-weight:600;
+display:block;
+color:#666;
+margin-bottom:3px;
+}
+
+}
+
+</style>
+
+<script>
+
+/* SEARCH */
+
+function searchTable(){
+
+let input=document.getElementById("searchInput").value.toLowerCase()
+let rows=document.querySelectorAll("tbody tr")
+
+rows.forEach(row=>{
+
+let text=row.innerText.toLowerCase()
+
+if(text.includes(input)){
+row.style.display=""
+}else{
+row.style.display="none"
+}
+
+})
+
+}
+
+/* STATUS TOGGLE */
+
+function toggleStatus(btn){
+
+if(btn.innerText==="Pending"){
+btn.innerText="Done"
+btn.classList.remove("pending")
+btn.classList.add("done")
+}else{
+btn.innerText="Pending"
+btn.classList.remove("done")
+btn.classList.add("pending")
+}
+
+updateProgress()
+
+}
+
+/* PROGRESS COUNTER */
+
+function updateProgress(){
+
+let buttons=document.querySelectorAll(".status")
+let done=0
+
+buttons.forEach(btn=>{
+if(btn.innerText==="Done"){done++}
+})
+
+document.getElementById("doneCount").innerText=done
+document.getElementById("totalCount").innerText=buttons.length
+
+}
+
+/* EXPORT PDF */
+
+function downloadPDF(){
+window.print()
+}
+
+/* EXPORT EXCEL */
+
+function exportTable(){
+
+let table=document.querySelector("table").outerHTML
+
+let data='data:application/vnd.ms-excel,'+encodeURIComponent(table)
+
+let link=document.createElement("a")
+
+link.href=data
+link.download="Labour_Compliance_Dashboard.xls"
+
+link.click()
+
+}
+
+document.addEventListener("DOMContentLoaded",updateProgress)
+
+</script>
+
+</head>
+
+<body>
+
+<header>
+India Labour Codes HR Compliance Dashboard
+</header>
+
+<div id="progressBar">
+Compliance Progress: <b><span id="doneCount">0</span> / <span id="totalCount">0</span></b>
+</div>
+
+<div class="toolbar">
+
+<input id="searchInput" onkeyup="searchTable()" placeholder="Search labour act or code">
+
+<button onclick="downloadPDF()">Export PDF</button>
+<button onclick="exportTable()">Export Excel</button>
+
+</div>
+
+<div class="table-container">
+
+<table>
+
+<thead>
+<tr>
+<th>Labour Code</th>
+<th>Acts Covered</th>
+<th>Eligibility</th>
+<th>Applicability Threshold</th>
+<th>Existing Compliance</th>
+<th>Existing Penalty</th>
+<th>New Amendments under Code</th>
+<th>New Penalties</th>
+<th>Key Highlights</th>
+<th>What It Covers</th>
+<th>Key Highlights</th>
+</tr>
+</thead>
+
+<tbody>
+
+<!-- CODE ON WAGES -->
+
+<tr>
+<td rowspan="4"><b>Code on Wages 2019</b></td>
+<td>Minimum Wages Act 1948</td>
+<td>All workers</td>
+<td>Scheduled employment</td>
+<td>Minimum wage register</td>
+<td>₹5,000</td>
+<td>National floor wage introduced</td>
+<td>₹50,000</td>
+<td>Uniform wage definition</td>
+<td rowspan="4">Regulates wages, bonuses, and equal pay for all employees across organized and unorganized sectors.</td>
+<td rowspan="4">• Salary must be paid before 7th of next month for most establishments
+• National floor wage cannot be reduced by states
+• Equal remuneration mandatory for men and women
+• Uniform definition of “wages” across labour laws
+• Overtime must be paid at double the wage rate</td>
+
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Payment of Wages Act 1936</td>
+<td>Employees under wage ceiling</td>
+<td>All establishments</td>
+<td>Timely wage payment</td>
+<td>₹7,500</td>
+<td>Digital wage payments encouraged</td>
+<td>₹50,000</td>
+<td>Salary timeline enforcement</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Payment of Bonus Act 1965</td>
+<td>Employees ≤ ₹21,000 salary</td>
+<td>≥20 employees</td>
+<td>Bonus register</td>
+<td>₹1,000</td>
+<td>Integrated wage definition</td>
+<td>₹1 Lakh</td>
+<td>Bonus compliance simplified</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Equal Remuneration Act 1976</td>
+<td>Male & female employees</td>
+<td>All employers</td>
+<td>Equal pay policy</td>
+<td>₹10,000</td>
+<td>Gender neutral wage rules</td>
+<td>₹1 Lakh</td>
+<td>No discrimination in wages</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<!-- INDUSTRIAL RELATIONS -->
+
+<tr>
+<td rowspan="3"><b>Industrial Relations Code 2020</b></td>
+<td>Industrial Disputes Act 1947</td>
+<td>Industrial workers</td>
+<td>≥100 workers</td>
+<td>Dispute resolution process</td>
+<td>₹5,000</td>
+<td>Layoff threshold increased to 300</td>
+<td>₹1 Lakh</td>
+<td>Reskilling fund introduced</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Trade Unions Act 1926</td>
+<td>Workers forming union</td>
+<td>Minimum 7 members</td>
+<td>Union registration</td>
+<td>₹500</td>
+<td>Negotiating union concept</td>
+<td>₹50,000</td>
+<td>Collective bargaining improved</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Industrial Employment Standing Orders Act 1946</td>
+<td>Industrial establishments</td>
+<td>≥100 workers</td>
+<td>Standing orders certification</td>
+<td>₹5,000</td>
+<td>Threshold increased to 300</td>
+<td>₹1 Lakh</td>
+<td>HR policy flexibility</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<!-- SOCIAL SECURITY -->
+
+<tr>
+<td rowspan="9"><b>Social Security Code 2020</b></td>
+<td>Employees Compensation Act 1923</td>
+<td>Workers injured at workplace</td>
+<td>All establishments</td>
+<td>Compensation payment</td>
+<td>₹5,000</td>
+<td>Expanded coverage</td>
+<td>₹1 Lakh</td>
+<td>Worker protection enhanced</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Employees State Insurance Act 1948</td>
+<td>Employees ≤ ₹21,000</td>
+<td>≥10 employees</td>
+<td>ESI contributions</td>
+<td>₹5,000</td>
+<td>Gig workers coverage</td>
+<td>₹1 Lakh</td>
+<td>Health coverage expansion</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Employees Provident Fund Act 1952</td>
+<td>Employees ≤ ₹15,000</td>
+<td>≥20 employees</td>
+<td>PF contribution</td>
+<td>₹10,000</td>
+<td>Universal social security concept</td>
+<td>₹1 Lakh</td>
+<td>Unified PF system</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Employment Exchanges Act 1959</td>
+<td>Employers recruiting staff</td>
+<td>≥25 employees</td>
+<td>Vacancy reporting</td>
+<td>₹500</td>
+<td>Digital reporting system</td>
+<td>₹50,000</td>
+<td>Online employment exchange</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Maternity Benefit Act 1961</td>
+<td>Women employees</td>
+<td>≥10 employees</td>
+<td>26 weeks maternity leave</td>
+<td>₹5,000</td>
+<td>Work from home provision</td>
+<td>₹1 Lakh</td>
+<td>Maternity rights expanded</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Payment of Gratuity Act 1972</td>
+<td>Employees completing 5 years</td>
+<td>≥10 employees</td>
+<td>Gratuity calculation</td>
+<td>₹20,000</td>
+<td>Fixed term employees eligible</td>
+<td>₹1 Lakh</td>
+<td>Gratuity coverage expanded</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Cine Workers Welfare Fund Act 1981</td>
+<td>Cinema workers</td>
+<td>Film industry</td>
+<td>Welfare contributions</td>
+<td>₹5,000</td>
+<td>Merged into social security framework</td>
+<td>₹1 Lakh</td>
+<td>Industry worker welfare</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>BOCW Welfare Cess Act 1996</td>
+<td>Construction workers</td>
+<td>Construction projects</td>
+<td>1% cess payment</td>
+<td>₹10,000</td>
+<td>Centralised welfare board</td>
+<td>₹1 Lakh</td>
+<td>Construction labour welfare</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Unorganised Workers Social Security Act 2008</td>
+<td>Gig & informal workers</td>
+<td>Unorganised sector</td>
+<td>Worker registration</td>
+<td>₹5,000</td>
+<td>Aggregator contribution system</td>
+<td>₹1 Lakh</td>
+<td>Gig worker protection</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<!-- OSH CODE -->
+
+<tr>
+<td rowspan="13"><b>OSH & Working Conditions Code 2020</b></td>
+<td>Factories Act 1948</td>
+<td>Factory workers</td>
+<td>10 workers with power / 20 without</td>
+<td>Factory license</td>
+<td>₹1 Lakh</td>
+<td>Single registration system</td>
+<td>₹2 Lakh</td>
+<td>Unified labour compliance</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Plantation Labour Act 1951</td>
+<td>Plantation workers</td>
+<td>≥15 workers</td>
+<td>Housing and medical facilities</td>
+<td>₹5,000</td>
+<td>Integrated welfare provisions</td>
+<td>₹1 Lakh</td>
+<td>Plantation worker rights</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Mines Act 1952</td>
+<td>Mine workers</td>
+<td>Mining operations</td>
+<td>Safety standards</td>
+<td>₹1 Lakh</td>
+<td>Unified safety code</td>
+<td>₹2 Lakh</td>
+<td>Worker safety strengthened</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Working Journalists Act 1955</td>
+<td>Media workers</td>
+<td>News establishments</td>
+<td>Wage protection</td>
+<td>₹5,000</td>
+<td>Integrated labour compliance</td>
+<td>₹1 Lakh</td>
+<td>Journalist labour protection</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Motor Transport Workers Act 1961</td>
+<td>Transport employees</td>
+<td>Transport undertakings</td>
+<td>Working hours regulation</td>
+<td>₹5,000</td>
+<td>Unified compliance</td>
+<td>₹1 Lakh</td>
+<td>Transport worker safety</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Beedi & Cigar Workers Act 1966</td>
+<td>Beedi workers</td>
+<td>Beedi manufacturing</td>
+<td>Health & welfare facilities</td>
+<td>₹5,000</td>
+<td>Integrated OSH compliance</td>
+<td>₹1 Lakh</td>
+<td>Worker welfare strengthened</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Contract Labour Act 1970</td>
+<td>Contract workers</td>
+<td>≥20 contract workers</td>
+<td>Contractor license</td>
+<td>₹10,000</td>
+<td>Single license framework</td>
+<td>₹1 Lakh</td>
+<td>Contract labour regulation</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Sales Promotion Employees Act 1976</td>
+<td>Sales employees</td>
+<td>Pharmaceutical sector</td>
+<td>Employee benefits</td>
+<td>₹5,000</td>
+<td>Integrated compliance</td>
+<td>₹1 Lakh</td>
+<td>Sales workforce protection</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Inter-State Migrant Workmen Act 1979</td>
+<td>Migrant workers</td>
+<td>≥5 migrant workers</td>
+<td>Worker registration</td>
+<td>₹10,000</td>
+<td>National migrant worker database</td>
+<td>₹1 Lakh</td>
+<td>Migrant worker protection</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Dock Workers Safety Act 1986</td>
+<td>Dock workers</td>
+<td>Dock operations</td>
+<td>Safety standards</td>
+<td>₹1 Lakh</td>
+<td>Integrated safety code</td>
+<td>₹2 Lakh</td>
+<td>Dock worker safety</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Building & Construction Workers Act 1996</td>
+<td>Construction workers</td>
+<td>Projects ≥10 workers</td>
+<td>Worker welfare board registration</td>
+<td>₹10,000</td>
+<td>Unified welfare schemes</td>
+<td>₹1 Lakh</td>
+<td>Construction labour protection</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Cine Workers & Cinema Theatre Workers Act</td>
+<td>Cinema industry workers</td>
+<td>Film establishments</td>
+<td>Worker welfare compliance</td>
+<td>₹5,000</td>
+<td>Integrated compliance</td>
+<td>₹1 Lakh</td>
+<td>Film worker safety</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+<tr>
+<td>Working Journalists Wage Act</td>
+<td>Journalists</td>
+<td>Media establishments</td>
+<td>Wage board compliance</td>
+<td>₹5,000</td>
+<td>Unified wage regulation</td>
+<td>₹1 Lakh</td>
+<td>Journalist wage security</td>
+<td><button class="status pending" onclick="toggleStatus(this)">Pending</button></td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</body>
+</html>
